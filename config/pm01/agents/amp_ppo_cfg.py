@@ -6,8 +6,8 @@ from engineai_rl_lab.tasks.mytask.agents import AmpBasePpoRunnerCfg, RslRlAmpCfg
 @configclass
 class PM01FlatAMPPPORunnerCfg(AmpBasePpoRunnerCfg):
     experiment_name = "mytask_pm01"
-    max_iterations = 20000
-    save_interval = 4000
+    max_iterations = 15000
+    save_interval = 3000
 
     amp = RslRlAmpCfg(
         dataset_path="datasets/amp/pm01/config/dataset.yaml",

@@ -1,3 +1,18 @@
+"""
+PM01 人形机器人 AMP 平地运动训练环境配置。
+
+主要功能：
+1. 配置 PM01 教育版机器人模型及关节执行器参数。
+2. 定义策略网络和 AMP 判别器所需的观测信息。
+3. 配置关节位置控制及动作缩放参数。
+4. 设置机器人线速度和角速度指令，实现速度跟踪控制。
+5. 配置运动奖励、姿态约束、足底接触及动作平滑性奖励。
+6. 设置机器人摔倒和异常接触时的终止条件。
+
+训练目标：
+利用 AMP 学习参考动作中的自然运动风格，
+结合 PPO 和速度跟踪奖励，实现 PM01 在平地环境下的稳定双足行走与转向。
+"""
 from __future__ import annotations
 
 from isaaclab.managers import ObservationGroupCfg as ObsGroup
@@ -40,9 +55,24 @@ ACTION_SCALE = {
 @configclass
 class PM01AmpObservationsCfg(AmpObservationsCfg):
     """PM01 observations. Disc terms are declared in expert-frame order, not inherited."""
+    """
+    PM01 机器人观测配置类。
 
+    继承通用 AMP 观测配置，针对 PM01 定义判别器所需的观测数据，
+    包括基座角速度、关节位置、关节速度、基座线速度和投影重力。
+    通过统一观测顺序和历史帧长度，保证机器人生成的动作数据
+    与专家参考动作数据具有一致的特征结构。
+    """
     @configclass
     class DiscriminatorCfg(ObsGroup):
+               """
+        AMP 判别器观测组配置类。
+
+        定义输入判别器的单帧运动特征，包括基座角速度、
+        关节位置与速度、基座线速度和投影重力。
+        通过历史帧堆叠提供连续运动信息，帮助判别器区分
+        机器人生成的动作与专家参考动作。
+        """
         base_ang_vel = ObsTerm(func=mdp.base_ang_vel)
         joint_pos = ObsTerm(func=mdp.discriminator_joint_pos)
         joint_vel = ObsTerm(func=mdp.discriminator_joint_vel)
@@ -62,10 +92,26 @@ class PM01AmpObservationsCfg(AmpObservationsCfg):
 @configclass
 class PM01AMPFlatEnvCfg(LocomotionAmpEnvCfg):
     """AMP flat environment configuration for the PM01 robot."""
+    """
+    PM01 AMP 平地运动训练环境配置类。
 
+    继承通用 AMP 运动环境配置，加载 PM01 机器人模型，
+    设置关节控制、动作缩放、执行器延迟和观测顺序。
+    同时配置线速度与角速度指令、运动奖励及终止条件，
+    为 PM01 在平地环境下学习自然双足行走和转向动作
+    提供完整的仿真训练环境。
+    """
     observations: PM01AmpObservationsCfg = PM01AmpObservationsCfg()
 
     def __post_init__(self):
+        """
+        环境初始化方法。
+
+        首先继承父类的默认环境配置，然后根据 PM01 的机器人结构
+        设置平地地形、机器人模型、关节动作控制和观测参数。
+        随后配置速度指令范围、运动奖励权重以及异常接触终止条件，
+        完成 PM01 AMP 训练环境的初始化。
+        """
         super().__post_init__()
 
         # PM01 trains on a plain ground plane rather than the generated rough terrain
@@ -88,10 +134,10 @@ class PM01AMPFlatEnvCfg(LocomotionAmpEnvCfg):
 
         self.events.add_joint_default_pos.params["asset_cfg"] = PM01_DFS_JOINT_ORDER_ASSET_CFG
 
-        self.commands.base_velocity.rel_standing_envs = 0.1
+        self.commands.base_velocity.rel_standing_envs = 0.0 # 0.1
         # 允许 lin_vel_x=0（站立）配合 ang_vel_z，形成纯原地转身命令
-        self.commands.base_velocity.ranges.lin_vel_x = (0.0, 0.8)
-        self.commands.base_velocity.ranges.ang_vel_z = (-1.2, 1.2)
+        self.commands.base_velocity.ranges.lin_vel_x = (0.3, 0.3) # 0.8
+        self.commands.base_velocity.ranges.ang_vel_z = (0.0, 0.0) # (-1.2,  1.2)
 
         self.rewards.track_lin_vel_xy_exp.weight = 3.0
         self.rewards.track_lin_vel_xy_exp.params["std"] = 0.5
