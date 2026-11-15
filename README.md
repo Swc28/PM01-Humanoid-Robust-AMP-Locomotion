@@ -221,6 +221,8 @@ python scripts/amp/play.py --task MyTask-PM01-v1 --num_envs 16 \
 | 2026-11-11 | 新增 `feet_clearance_turning`、`command_stall_penalty` 两个 reward 项，基础配置中默认 `weight=0`（不启用） | 未训练 |
 | 2026-11-11 | PM01 命令范围改为 `lin_vel_x=(0.0, 0.8)`、`ang_vel_z=(-1.2, 1.2)`；启用两项转身 reward（`1.0` / `-0.5`） | 未训练（旧 run `2026-09-14_22-46-03` 仅验证链路） |
 | 2026-11-12 | README 重构：删除算法迭代与版本管理章节，改为修改日志、问题记录、注意事项三节 | — |
+| 2026-11-13 | `amp_ppo_cfg.py`：`max_iterations 20000→15000`、`save_interval 4000→3000`；`flat_amp_env_cfg.py`：`rel_standing_envs 0.1→0.0`、`lin_vel_x (0.0,0.8)→(0.3,0.3)`（固定向前速度）、`ang_vel_z (-1.2,1.2)→(0.0,0.0)`（关闭原地转身） | `2026-11-13_16-46-42`（训练至 `model_14999.pt`） |
+| 2026-11-15 | `flat_amp_env_cfg.py`：`lin_vel_x (0.3,0.3)→(0.0,0.8)`（恢复速度范围），保留 `ang_vel_z=(0.0,0.0)`、`rel_standing_envs=0.0`；补充文件、类、方法中文 docstring | `2026-11-15_17-03-37`（仅 `model_0.pt`，未完成） |
 
 > 新增记录时在表格**最后一行**追加，不改动历史行；涉及上游同步或算法逻辑改动时，在「修改内容」中注明 commit hash。
 
