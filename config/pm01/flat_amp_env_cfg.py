@@ -136,7 +136,7 @@ class PM01AMPFlatEnvCfg(LocomotionAmpEnvCfg):
 
         self.commands.base_velocity.rel_standing_envs = 0.0 # 0.1
         # 允许 lin_vel_x=0（站立）配合 ang_vel_z，形成纯原地转身命令
-        self.commands.base_velocity.ranges.lin_vel_x = (0.0, 0.8) # 0.8 (0.3, 0.3)
+        self.commands.base_velocity.ranges.lin_vel_x = (0.5, 0.5) # 0.8 (0.3, 0.3) # (0.0, 0.8)
         self.commands.base_velocity.ranges.ang_vel_z = (0.0, 0.0) # (-1.2,  1.2) 
 
         self.rewards.track_lin_vel_xy_exp.weight = 3.0
