@@ -193,15 +193,15 @@ python scripts/amp/train.py --task MyTask-PM01-v1 --num_envs 4096 --headless \
 tensorboard --logdir logs/rsl_rl/mytask_pm01
 
 # 仿真回放（GUI，关闭窗口结束）
-python scripts/amp/play.py --task MyTask-PM01-v1 --num_envs 16 \
-  --load_run <时间戳目录> --checkpoint <编号最大的 model_*.pt>
+python scripts/amp/play.py --task MyTask-PM01-v1 --num_envs 1 \
+  --load_run <时间戳目录> --checkpoint <model_*.pt>
 ```
 
 **产物位置**：`logs/rsl_rl/mytask_pm01/<时间戳>/`
 
 | 文件 | 用途 |
 |------|------|
-| `model_*.pt` | 训练权重（默认每 2000 轮保存） |
+| `model_*.pt` | 训练权重（默认每 3000 轮保存） |
 | `params/env.yaml` `params/agent.yaml` | 该次训练完整配置快照 |
 | `git/engineai_rl_lab.diff` | 该次训练时的代码差异（版本追溯关键） |
 | `export/*.onnx` `export/*.mnn` | 部署导出 |
