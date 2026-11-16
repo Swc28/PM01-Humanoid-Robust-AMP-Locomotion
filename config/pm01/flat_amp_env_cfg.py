@@ -134,10 +134,10 @@ class PM01AMPFlatEnvCfg(LocomotionAmpEnvCfg):
 
         self.events.add_joint_default_pos.params["asset_cfg"] = PM01_DFS_JOINT_ORDER_ASSET_CFG
 
-        self.commands.base_velocity.rel_standing_envs = 0.0 # 0.1
+        self.commands.base_velocity.rel_standing_envs = 0.1 # 0.1 # 0.0
         # 允许 lin_vel_x=0（站立）配合 ang_vel_z，形成纯原地转身命令
-        self.commands.base_velocity.ranges.lin_vel_x = (0.5, 0.5) # 0.8 (0.3, 0.3) # (0.0, 0.8)
-        self.commands.base_velocity.ranges.ang_vel_z = (0.0, 0.0) # (-1.2,  1.2) 
+        self.commands.base_velocity.ranges.lin_vel_x = (0.0, 0.8) # 0.8 (0.3, 0.3) # (0.0, 0.8) # (0.0, 0.5)
+        self.commands.base_velocity.ranges.ang_vel_z = (-1.2, 1.2) # (-1.2,  1.2) 
 
         self.rewards.track_lin_vel_xy_exp.weight = 3.0
         self.rewards.track_lin_vel_xy_exp.params["std"] = 0.5
@@ -160,7 +160,7 @@ class PM01AMPFlatEnvCfg(LocomotionAmpEnvCfg):
         # 原地转身相关 reward
         self.rewards.feet_clearance_turning.weight = 1.0
         self.rewards.command_stall_penalty.weight = -0.5
-        self.rewards.termination_penalty.weight = -50.0
+        self.rewards.termination_penalty.weight = -30.0 # -50.0
 
         self.terminations.base_contact.params["sensor_cfg"].body_names = [
             "LINK_BASE",
