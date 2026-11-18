@@ -38,12 +38,12 @@ ACTUATOR_DELAY_RANGE = (2, 8)
 
 ACTION_SCALE = {
     ".*_HIP_PITCH_.*": 0.5,
-    ".*_HIP_ROLL_.*": 0.2,
-    ".*_HIP_YAW_.*": 0.2,
+    ".*_HIP_ROLL_.*": 0.15, # 0.2
+    ".*_HIP_YAW_.*": 0.15, # 0.2
     ".*_KNEE_PITCH_.*": 0.5,
     ".*_ANKLE_PITCH_.*": 0.5,
-    ".*_ANKLE_ROLL_.*": 0.2,
-    ".*WAIST_YAW.*": 0.2,
+    ".*_ANKLE_ROLL_.*": 0.15, # 0.2
+    ".*WAIST_YAW.*": 0.15, # 0.2
     ".*_SHOULDER_PITCH_.*": 0.2,
     ".*_SHOULDER_ROLL_.*": 0.2,
     ".*_SHOULDER_YAW_.*": 0.2,
@@ -134,33 +134,35 @@ class PM01AMPFlatEnvCfg(LocomotionAmpEnvCfg):
 
         self.events.add_joint_default_pos.params["asset_cfg"] = PM01_DFS_JOINT_ORDER_ASSET_CFG
 
-        self.commands.base_velocity.rel_standing_envs = 0.1 # 0.1 # 0.0
+        self.commands.base_velocity.rel_standing_envs = 0.0 # 0.1 # 0.0
         # 允许 lin_vel_x=0（站立）配合 ang_vel_z，形成纯原地转身命令
-        self.commands.base_velocity.ranges.lin_vel_x = (0.0, 0.8) # 0.8 (0.3, 0.3) # (0.0, 0.8) # (0.0, 0.5)
-        self.commands.base_velocity.ranges.ang_vel_z = (-1.2, 1.2) # (-1.2,  1.2) 
+        self.commands.base_velocity.ranges.lin_vel_x = (0.5, 0.5) # 0.8 (0.3, 0.3) # (0.0, 0.8) # (0.0, 0.5)
+        self.commands.base_velocity.ranges.lin_vel_y = (0.0, 0.0) # (0.0, 0.0)
+        self.commands.base_velocity.ranges.ang_vel_z = (0.0, 0.0) # (-1.2,  1.2) 
 
-        self.rewards.track_lin_vel_xy_exp.weight = 3.0
-        self.rewards.track_lin_vel_xy_exp.params["std"] = 0.5
-        self.rewards.track_ang_vel_z_exp.weight = 2.0
-        self.rewards.track_ang_vel_z_exp.params["std"] = 0.5
-        self.rewards.flat_orientation_l2.weight = -1.0
-        self.rewards.lin_vel_z_l2.weight = -0.75
-        self.rewards.ang_vel_xy_l2.weight = -0.05
+        #奖励函数设置
+        self.rewards.track_lin_vel_xy_exp.weight = 3.5 # 3.0
+        self.rewards.track_lin_vel_xy_exp.params["std"] = 0.35
+        self.rewards.track_ang_vel_z_exp.weight = 2.5
+        self.rewards.track_ang_vel_z_exp.params["std"] = 0.35 
+        self.rewards.flat_orientation_l2.weight = -1.5
+        self.rewards.lin_vel_z_l2.weight = -1.0 
+        self.rewards.ang_vel_xy_l2.weight = -0.15 
         self.rewards.dof_torques_l2.weight = -1.0e-6
-        self.rewards.dof_acc_l2.weight = -1.0e-8
-        self.rewards.action_rate_l2.weight = -0.01
+        self.rewards.dof_acc_l2.weight = -1.0e-7
+        self.rewards.action_rate_l2.weight = -0.02 # -0.01
         self.rewards.action_smoothness.weight = 0.0
         self.rewards.dof_pos_limits.weight = -0.1
-        self.rewards.joint_deviation_hip.weight = -0.01
+        self.rewards.joint_deviation_hip.weight = -0.02 # -0.01
         self.rewards.joint_deviation_arms.weight = -0.01
         self.rewards.joint_deviation_waist.weight = -1.0
-        self.rewards.feet_air_time.weight = 2.0
+        self.rewards.feet_air_time.weight = 1.5 # 2.0
         self.rewards.feet_air_time.params["threshold"] = 0.3
-        self.rewards.feet_slide.weight = -0.4
+        self.rewards.feet_slide.weight = -0.7 # -0.4
         # 原地转身相关 reward
-        self.rewards.feet_clearance_turning.weight = 1.0
-        self.rewards.command_stall_penalty.weight = -0.5
-        self.rewards.termination_penalty.weight = -30.0 # -50.0
+         # self.rewards.feet_clearance_turning.weight = 1.0
+         # self.rewards.command_stall_penalty.weight = -0.5
+         # self.rewards.termination_penalty.weight = -30.0 # -50.0
 
         self.terminations.base_contact.params["sensor_cfg"].body_names = [
             "LINK_BASE",
