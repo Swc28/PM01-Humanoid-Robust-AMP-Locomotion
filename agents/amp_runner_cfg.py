@@ -3,8 +3,13 @@
 All AMP hyperparameters live in :class:`RslRlAmpCfg` and are consumed by
 ``AMP.construct_algorithm`` through the nested ``amp`` entry of the runner config, so a
 robot agent config only needs to override the values it cares about.
-"""
 
+AMP 的 Runner 配置文件，负责设置 PPO、AMP 判别器、动作风格奖励等超参数。
+AMP 基于 PPO，通过训练判别器判断动作是否为专家动作，实现动作风格迁移。
+训练过程包含两阶段：
+1. 训练判别器：判断动作是否来自专家数据；
+2. 训练 PPO：生成接近专家的动作。
+"""
 from __future__ import annotations
 
 from dataclasses import MISSING

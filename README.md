@@ -223,6 +223,7 @@ python scripts/amp/play.py --task MyTask-PM01-v1 --num_envs 1 \
 | 2026-11-12 | README 重构：删除算法迭代与版本管理章节，改为修改日志、问题记录、注意事项三节 | — |
 | 2026-11-13 | `amp_ppo_cfg.py`：`max_iterations 20000→15000`、`save_interval 4000→3000`；`flat_amp_env_cfg.py`：`rel_standing_envs 0.1→0.0`、`lin_vel_x (0.0,0.8)→(0.3,0.3)`（固定向前速度）、`ang_vel_z (-1.2,1.2)→(0.0,0.0)`（关闭原地转身） | `2026-11-13_16-46-42`（训练至 `model_14999.pt`） |
 | 2026-11-15 | `flat_amp_env_cfg.py`：`lin_vel_x (0.3,0.3)→(0.0,0.8)`（恢复速度范围），保留 `ang_vel_z=(0.0,0.0)`、`rel_standing_envs=0.0`；补充文件、类、方法中文 docstring | `2026-11-15_17-03-37`（仅 `model_0.pt`，未完成） |
+| 2026-11-18 | `flat_amp_env_cfg.py`：固定直线行走 `lin_vel_x=(0.3,0.5)`、`lin_vel_y=(0.0,0.0)`、`ang_vel_z=(0.0,0.0)`（目标 0.3~0.5 m/s 稳定直行，关闭转身）；收紧速度跟踪 `track_lin_vel_xy_exp` weight `3.0→3.5` / std `0.5→0.35`、`track_ang_vel_z_exp` weight `2.0→2.5` / std `0.5→0.35`；增强稳定约束 `flat_orientation_l2 -1.0→-1.5`、`lin_vel_z_l2 -0.75→-1.0`、`ang_vel_xy_l2 -0.05→-0.15`、`feet_slide -0.4→-0.7`；平滑动作 `action_rate_l2 -0.01→-0.02`、`dof_acc_l2 -1e-8→-1e-7`、`joint_deviation_hip -0.01→-0.02`；降低摆腿激励 `feet_air_time 2.0→1.5`；注释关闭 `feet_clearance_turning` / `command_stall_penalty` / `termination_penalty` 三项转身相关 reward。仿真验证通过后部署 PM01 实机 | `2026-11-18_17-19-27`（训练中，当前仅 `model_0.pt`） |
 
 > 新增记录时在表格**最后一行**追加，不改动历史行；涉及上游同步或算法逻辑改动时，在「修改内容」中注明 commit hash。
 
