@@ -38,12 +38,12 @@ ACTUATOR_DELAY_RANGE = (2, 8)
 
 ACTION_SCALE = {
     ".*_HIP_PITCH_.*": 0.5,
-    ".*_HIP_ROLL_.*": 0.18, # 0.2 0.18
+    ".*_HIP_ROLL_.*": 0.2, # 0.2 0.18
     ".*_HIP_YAW_.*": 0.15, # 0.2
     ".*_KNEE_PITCH_.*": 0.5,
     ".*_ANKLE_PITCH_.*": 0.5,
-    ".*_ANKLE_ROLL_.*": 0.18, # 0.2
-    ".*WAIST_YAW.*": 0.15, # 0.2
+    ".*_ANKLE_ROLL_.*": 0.20, # 0.2
+    ".*WAIST_YAW.*": 0.2, # 0.2
     ".*_SHOULDER_PITCH_.*": 0.2,
     ".*_SHOULDER_ROLL_.*": 0.2,
     ".*_SHOULDER_YAW_.*": 0.2,
@@ -161,7 +161,7 @@ class PM01AMPFlatEnvCfg(LocomotionAmpEnvCfg):
         self.rewards.feet_slide.weight = -0.4 # -0.4 -0.7      
         # 原地转身相关 reward
          # self.rewards.feet_clearance_turning.weight = 1.0
-         # self.rewards.command_stall_penalty.weight = -0.5
+        self.rewards.command_stall_penalty.weight = -0.2
          # self.rewards.termination_penalty.weight = -30.0 # -50.0
 
         self.terminations.base_contact.params["sensor_cfg"].body_names = [
